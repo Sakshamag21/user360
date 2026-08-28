@@ -1,0 +1,626 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<title>User360</title>
+
+<style>
+  :root {
+    --bg: #ECEFF3;
+    --surface: #FFFFFF;
+    --surface-2: #F4F6F9;
+    --ink: #1A2233;
+    --ink-muted: #55617A;
+    --ink-faint: #8892A6;
+    --line: #CBD2DE;
+    --line-soft: #DEE3EB;
+    --accent: #B8681F;
+    --accent-ink: #7A4712;
+    --accent-soft: #F3E3CE;
+    --signal: #147A7D;
+    --signal-soft: #DCEEEE;
+    --shadow: rgba(26,34,51,0.10);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0C111C;
+      --surface: #131A29;
+      --surface-2: #171F30;
+      --ink: #DDE3EE;
+      --ink-muted: #9AA5BC;
+      --ink-faint: #647089;
+      --line: #2A3348;
+      --line-soft: #212A3D;
+      --accent: #E0A24C;
+      --accent-ink: #F3C480;
+      --accent-soft: #3A2A16;
+      --signal: #4FD1D4;
+      --signal-soft: #123334;
+      --shadow: rgba(0,0,0,0.45);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0C111C;
+    --surface: #131A29;
+    --surface-2: #171F30;
+    --ink: #DDE3EE;
+    --ink-muted: #9AA5BC;
+    --ink-faint: #647089;
+    --line: #2A3348;
+    --line-soft: #212A3D;
+    --accent: #E0A24C;
+    --accent-ink: #F3C480;
+    --accent-soft: #3A2A16;
+    --signal: #4FD1D4;
+    --signal-soft: #123334;
+    --shadow: rgba(0,0,0,0.45);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .wide {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  h1, h2, h3 {
+    font-family: "Zilla Slab", Georgia, serif;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { margin: 0; }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--signal);
+    font-weight: 500;
+  }
+
+  a { color: var(--signal); }
+
+  /* ---------- Blueprint texture (spent boldness: hero + tiles only) ---------- */
+  .blueprint {
+    background-image:
+      repeating-linear-gradient(0deg, var(--line-soft) 0, var(--line-soft) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, var(--line-soft) 0, var(--line-soft) 1px, transparent 1px, transparent 32px);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 72px 0 56px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 22px;
+    padding: 56px 32px 64px;
+  }
+
+  .radar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 640px;
+    height: 640px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .radar span {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--signal);
+    border-radius: 50%;
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .radar span { animation: pulse 4.5s cubic-bezier(.2,.6,.4,1) infinite; }
+    .radar span:nth-child(2) { animation-delay: 1.5s; }
+    .radar span:nth-child(3) { animation-delay: 3s; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .radar span { opacity: 0.14; transform: scale(0.55); }
+    .radar span:nth-child(2) { transform: scale(0.78); opacity: 0.09; }
+    .radar span:nth-child(3) { transform: scale(1); opacity: 0.05; }
+  }
+  @keyframes pulse {
+    0%   { transform: scale(0.35); opacity: 0.35; }
+    100% { transform: scale(1);    opacity: 0; }
+  }
+
+  .mark {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .mark .dot { color: var(--accent); }
+
+  .tagline {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(17px, 2.2vw, 21px);
+    color: var(--ink-muted);
+    max-width: 46ch;
+  }
+
+  .hero-meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    color: var(--ink-muted);
+    background: var(--surface);
+  }
+
+  /* ---------- Section rhythm ---------- */
+  section { padding: 52px 0; }
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  .section-head h2 { font-size: clamp(24px, 3vw, 30px); font-weight: 600; }
+
+  .rule {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 0;
+  }
+
+  .lede {
+    font-size: 18px;
+    color: var(--ink);
+    max-width: 68ch;
+  }
+  .lede + .lede { margin-top: 16px; color: var(--ink-muted); font-size: 16px; }
+
+  .confidentiality {
+    margin-top: 22px;
+    font-size: 13.5px;
+    color: var(--ink-faint);
+    border-left: 2px solid var(--line);
+    padding-left: 14px;
+    max-width: 62ch;
+  }
+
+  /* ---------- Thumbnails ---------- */
+  .thumb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 28px;
+  }
+  .thumb-card-outer { display: flex; flex-direction: column; gap: 10px; }
+  .thumb-card {
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    box-shadow: 0 12px 28px -14px var(--shadow);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 22px;
+    gap: 12px;
+    background: var(--surface-2);
+  }
+  .thumb-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  .thumb-cover .mark { font-size: 34px; }
+  .thumb-cover .tagline { font-size: 13px; max-width: 22ch; }
+  .thumb-cover .radar { width: 320px; height: 320px; }
+
+  .thumb-arch { gap: 6px; }
+  .thumb-arch .step-row { display: flex; align-items: center; gap: 6px; }
+  .thumb-arch .step {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-muted);
+  }
+  .thumb-arch .arrow { color: var(--signal); font-size: 13px; }
+  .thumb-arch h3 { font-size: 15px; font-weight: 600; margin-top: 8px; }
+
+  .thumb-stack { gap: 14px; }
+  .thumb-stack h3 { font-size: 15px; font-weight: 600; }
+  .badge-cloud { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .badge {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    padding: 5px 9px;
+    border-radius: 4px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink-muted);
+  }
+
+  /* ---------- Diagram ---------- */
+  figure.diagram {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .diagram-scroll {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .diagram-scroll svg { display: block; max-width: 100%; height: auto; min-width: 760px; }
+  figcaption {
+    font-size: 14px;
+    color: var(--ink-muted);
+    max-width: 68ch;
+  }
+  .diagram text { font-family: "IBM Plex Sans", sans-serif; fill: currentColor; }
+  .diagram .mono { font-family: "IBM Plex Mono", monospace; }
+  .diagram .box { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.4; }
+  .diagram .orch { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.4; }
+  .diagram .gate { fill: var(--surface); stroke: var(--ink-faint); stroke-width: 1.3; }
+  .diagram .out { fill: var(--signal-soft); stroke: var(--signal); stroke-width: 1.3; }
+  .diagram .flow { stroke: currentColor; stroke-width: 1.6; fill: none; }
+  .diagram .retry { stroke: var(--accent); stroke-width: 1.6; fill: none; stroke-dasharray: 5 5; }
+  .diagram .eyebrow-tag { fill: var(--signal); font-size: 10.5px; letter-spacing: 0.08em; }
+  .diagram .title { font-size: 13.5px; font-weight: 600; }
+  .diagram .sub { font-size: 10.5px; fill: var(--ink-muted); }
+  .diagram .retry-label { fill: var(--accent-ink); font-size: 11px; }
+
+  /* ---------- Highlights ---------- */
+  .highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  .highlight {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 22px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .highlight h3 { font-size: 17px; font-weight: 600; }
+  .highlight p { font-size: 14.5px; color: var(--ink-muted); }
+
+  /* ---------- Stack strip ---------- */
+  .stack-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .stack-strip .badge { font-size: 12px; padding: 7px 13px; }
+
+  /* ---------- Role list ---------- */
+  .role-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .role-list li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+  .role-list li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .role-list b { font-weight: 600; }
+  .role-list span { color: var(--ink-muted); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 60px 0 80px;
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+  }
+  footer .lede { font-size: 17px; }
+  footer .fine {
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+</style>
+
+<div class="hero blueprint">
+  <div class="wrap hero-inner">
+    <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="eyebrow">Upwork case study</div>
+    <h1 class="mark">User360<span class="dot">.</span></h1>
+    <p class="tagline">A three-layer data pipeline that turns raw field-activity events into one risk score per agent — in real time, at scale.</p>
+    <div class="hero-meta">
+      <span class="chip">Data Engineering</span>
+      <span class="chip">Distributed Systems</span>
+      <span class="chip">Fraud &amp; Risk Scoring</span>
+      <span class="chip">Streaming + Batch</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="thumbnails">
+    <div class="section-head">
+      <div class="eyebrow">Portfolio tiles</div>
+      <h2>Ready-made covers</h2>
+    </div>
+    <div class="thumb-grid">
+      <div class="thumb-card-outer">
+        <div class="thumb-card thumb-cover blueprint">
+          <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
+          <h1 class="mark" style="position:relative;z-index:1;">User360<span class="dot">.</span></h1>
+          <p class="tagline" style="position:relative;z-index:1;">Risk scoring for distributed field networks</p>
+        </div>
+        <p class="thumb-label">Cover tile</p>
+      </div>
+
+      <div class="thumb-card-outer">
+        <div class="thumb-card thumb-arch">
+          <div class="step-row">
+            <span class="step">Features</span>
+            <span class="arrow">→</span>
+            <span class="step">Scores</span>
+            <span class="arrow">→</span>
+            <span class="step">Risk</span>
+          </div>
+          <h3>Three-layer scoring pipeline</h3>
+        </div>
+        <p class="thumb-label">Architecture tile</p>
+      </div>
+
+      <div class="thumb-card-outer">
+        <div class="thumb-card thumb-stack">
+          <h3>Built with</h3>
+          <div class="badge-cloud">
+            <span class="badge">Airflow</span>
+            <span class="badge">Spark</span>
+            <span class="badge">Kafka</span>
+            <span class="badge">Trino</span>
+            <span class="badge">ClickHouse</span>
+            <span class="badge">Kubernetes</span>
+          </div>
+        </div>
+        <p class="thumb-label">Stack tile</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="overview">
+    <div class="section-head">
+      <div class="eyebrow">Overview</div>
+      <h2>What it does</h2>
+    </div>
+    <p class="lede">User360 is a fraud- and risk-scoring platform for a large distributed field-agent network. Activity signals — device fingerprints, transaction timing, document-verification outcomes, and authentication logs — stream in continuously and are turned into one risk score and tier per agent, refreshed on a daily cadence with real-time alerting for the highest-confidence signals in between.</p>
+    <p class="lede">I designed and built the backend pipeline end to end: the feature-engineering layer, the statistical scoring framework, the orchestration and failure-recovery logic that keeps it running unattended, and the serving layer that feeds analyst dashboards and automated case escalation.</p>
+    <p class="confidentiality">Domain and client details are generalized here to respect confidentiality. The architecture, engineering patterns, and my role below are representative of the system actually shipped.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section id="architecture">
+    <div class="section-head">
+      <div class="eyebrow">Architecture</div>
+      <h2>How a risk score gets made</h2>
+    </div>
+
+    <figure class="diagram">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 1300 430" role="img" aria-label="An orchestration layer schedules three sequential stages — feature engineering, statistical normalization, and composite scoring — separated by pass/fail gates. Failed units are retried hourly until a cutoff, feeding back into feature engineering. The final stage fans out to a master registry, a real-time signal stream, and a BI serving layer.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+            </marker>
+            <marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"></path>
+            </marker>
+          </defs>
+
+          <!-- Orchestration bar -->
+          <rect class="orch" x="60" y="14" width="970" height="56" rx="8"></rect>
+          <text x="545" y="36" text-anchor="middle" class="title mono">ORCHESTRATION LAYER</text>
+          <text x="545" y="54" text-anchor="middle" class="sub mono">schedules runs · gates promotion between layers · retries failures</text>
+
+          <line class="flow" x1="190" y1="70" x2="190" y2="106" marker-end="url(#arrow)"></line>
+          <line class="flow" x1="570" y1="70" x2="570" y2="126" marker-end="url(#arrow)"></line>
+          <line class="flow" x1="920" y1="70" x2="920" y2="126" marker-end="url(#arrow)"></line>
+
+          <!-- Layer 1 -->
+          <rect class="box" x="60" y="110" width="260" height="180" rx="8"></rect>
+          <text x="80" y="132" class="eyebrow-tag mono">01</text>
+          <text x="190" y="132" text-anchor="middle" class="title">Feature Engineering</text>
+          <rect x="80" y="148" width="220" height="28" rx="4" class="gate"></rect>
+          <text x="190" y="166" text-anchor="middle" class="sub mono">Device Activity</text>
+          <rect x="80" y="184" width="220" height="28" rx="4" class="gate"></rect>
+          <text x="190" y="202" text-anchor="middle" class="sub mono">Transaction Patterns</text>
+          <rect x="80" y="220" width="220" height="28" rx="4" class="gate"></rect>
+          <text x="190" y="238" text-anchor="middle" class="sub mono">Authentication Events</text>
+          <rect x="80" y="256" width="220" height="28" rx="4" class="gate"></rect>
+          <text x="190" y="274" text-anchor="middle" class="sub mono">Document Checks</text>
+
+          <!-- Gate 1 -->
+          <line class="flow" x1="320" y1="200" x2="350" y2="200" marker-end="url(#arrow)"></line>
+          <polygon class="gate" points="390,166 430,200 390,234 350,200"></polygon>
+          <text x="390" y="204" text-anchor="middle" class="sub mono">pass?</text>
+          <line class="flow" x1="430" y1="200" x2="460" y2="200" marker-end="url(#arrow)"></line>
+
+          <!-- Layer 2 -->
+          <rect class="box" x="460" y="130" width="220" height="140" rx="8"></rect>
+          <text x="480" y="152" class="eyebrow-tag mono">02</text>
+          <text x="570" y="152" text-anchor="middle" class="title">Statistical Normalization</text>
+          <text x="570" y="196" text-anchor="middle" class="sub mono">percentile rank</text>
+          <text x="570" y="216" text-anchor="middle" class="sub mono">z-score · exponential decay</text>
+          <text x="570" y="236" text-anchor="middle" class="sub mono">Wilson lower-bound</text>
+
+          <!-- Gate 2 -->
+          <line class="flow" x1="680" y1="200" x2="710" y2="200" marker-end="url(#arrow)"></line>
+          <polygon class="gate" points="750,166 790,200 750,234 710,200"></polygon>
+          <text x="750" y="204" text-anchor="middle" class="sub mono">pass?</text>
+          <line class="flow" x1="790" y1="200" x2="810" y2="200" marker-end="url(#arrow)"></line>
+
+          <!-- Layer 3 -->
+          <rect class="box" x="810" y="130" width="220" height="140" rx="8"></rect>
+          <text x="830" y="152" class="eyebrow-tag mono">03</text>
+          <text x="920" y="152" text-anchor="middle" class="title">Composite Scoring</text>
+          <text x="920" y="196" text-anchor="middle" class="sub mono">weighted average</text>
+          <text x="920" y="216" text-anchor="middle" class="sub mono">softmax blend</text>
+          <text x="920" y="236" text-anchor="middle" class="sub mono">max-signal override</text>
+
+          <!-- Fan-out -->
+          <line class="flow" x1="1030" y1="200" x2="1080" y2="95"  marker-end="url(#arrow)"></line>
+          <line class="flow" x1="1030" y1="200" x2="1080" y2="200" marker-end="url(#arrow)"></line>
+          <line class="flow" x1="1030" y1="200" x2="1080" y2="305" marker-end="url(#arrow)"></line>
+
+          <rect class="out" x="1080" y="60"  width="200" height="70" rx="7"></rect>
+          <text x="1180" y="86"  text-anchor="middle" class="title">Master Registry</text>
+          <text x="1180" y="106" text-anchor="middle" class="sub mono">risk score + tier / agent</text>
+
+          <rect class="out" x="1080" y="165" width="200" height="70" rx="7"></rect>
+          <text x="1180" y="191" text-anchor="middle" class="title">Real-Time Signals</text>
+          <text x="1180" y="211" text-anchor="middle" class="sub mono">threshold alerts → case queue</text>
+
+          <rect class="out" x="1080" y="270" width="200" height="70" rx="7"></rect>
+          <text x="1180" y="296" text-anchor="middle" class="title">BI Serving Layer</text>
+          <text x="1180" y="316" text-anchor="middle" class="sub mono">dashboards for analysts</text>
+
+          <!-- Retry loop -->
+          <path class="retry" d="M750,234 C750,330 750,392 560,392 L 230,392 C 190,392 190,350 190,290" marker-end="url(#arrow-accent)"></path>
+          <rect x="330" y="374" width="330" height="24" rx="12" fill="var(--surface)" stroke="var(--line)"></rect>
+          <text x="495" y="390" text-anchor="middle" class="retry-label mono">retry failed units hourly, until cutoff</text>
+        </svg>
+      </div>
+      <figcaption>The orchestration layer runs the three stages on a schedule and only promotes a batch of agents to the next stage once the current one fully succeeds. Anything that fails is retried hourly — re-running just the failed piece, not the whole stage — until a daily cutoff, then whatever passed cascades forward into normalization and composite scoring. The final score fans out to three consumers: the operational registry, a real-time alert stream, and an analyst-facing BI layer.</figcaption>
+    </figure>
+  </section>
+
+  <hr class="rule">
+
+  <section id="highlights">
+    <div class="section-head">
+      <div class="eyebrow">Engineering</div>
+      <h2>What made this hard</h2>
+    </div>
+    <div class="highlight-grid">
+      <div class="highlight">
+        <h3>Decoupled scoring stages</h3>
+        <p>Feature extraction, statistical normalization, and composite scoring are independent stages driven by a shared metadata registry — new behavioral signals or scoring formulas plug in without touching pipeline code.</p>
+      </div>
+      <div class="highlight">
+        <h3>Zero-downtime evolution</h3>
+        <p>Ran two pipeline generations side by side under separate schedules so resilience features could be added and proven out without ever pausing the live scoring run.</p>
+      </div>
+      <div class="highlight">
+        <h3>Failure-aware retries</h3>
+        <p>Hourly retry logic re-runs only the failed unit of work, guarded by idempotency checks so a retry can never silently double-count a score that already landed.</p>
+      </div>
+      <div class="highlight">
+        <h3>Real-time signal emission</h3>
+        <p>High-confidence threshold crossings stream out to a message bus within minutes, independent of the daily batch cadence, feeding automated case escalation.</p>
+      </div>
+      <div class="highlight">
+        <h3>Cross-system consistency checks</h3>
+        <p>An automated reconciliation job cross-checks the served copy of each score against its source of truth daily, catching silent drift before an analyst would.</p>
+      </div>
+      <div class="highlight">
+        <h3>Unattended-operation reporting</h3>
+        <p>A daily health report — row counts, staleness, signal volume — is generated and distributed automatically, so pipeline health is visible without anyone watching logs.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="stack">
+    <div class="section-head">
+      <div class="eyebrow">Stack</div>
+      <h2>Built with</h2>
+    </div>
+    <div class="stack-strip">
+      <span class="badge">Apache Airflow</span>
+      <span class="badge">Apache Spark / PySpark</span>
+      <span class="badge">Trino + Iceberg</span>
+      <span class="badge">Kubernetes</span>
+      <span class="badge">Apache Kafka</span>
+      <span class="badge">ClickHouse</span>
+      <span class="badge">MySQL</span>
+      <span class="badge">S3-compatible object storage</span>
+      <span class="badge">Python</span>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="role">
+    <div class="section-head">
+      <div class="eyebrow">My role</div>
+      <h2>What I built</h2>
+    </div>
+    <ul class="role-list">
+      <li><div><b>Designed the three-layer scoring architecture</b> <span>— from raw event streams to a single per-agent risk tier, with each stage independently schedulable and testable.</span></div></li>
+      <li><div><b>Built the orchestration and gating logic</b> <span>— promotion between stages, hourly retry-until-cutoff, and idempotency guards to keep reruns safe.</span></div></li>
+      <li><div><b>Implemented the statistical scoring library</b> <span>— rank, z-score, exponential decay, and Wilson-interval methods, dispatched by metadata rather than hardcoded per feature.</span></div></li>
+      <li><div><b>Wired up real-time alerting</b> <span>— threshold-based signal emission to a message bus feeding downstream case management.</span></div></li>
+      <li><div><b>Shipped the serving layer</b> <span>— the analytics store and consistency checks that keep dashboards and the operational registry trustworthy.</span></div></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p class="lede">Looking for someone to build or untangle a data pipeline like this — orchestration, scoring logic, or the resilience layer around it?</p>
+    <p class="fine">Case study generalized to protect client confidentiality. Happy to walk through the real architecture decisions in a call.</p>
+  </footer>
+
+</div>
